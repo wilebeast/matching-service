@@ -1,0 +1,188 @@
+{
+  "version": 1,
+  "context_schema": {
+    "version": 1,
+    "fields": {
+      "user.member": {
+        "type": "boolean"
+      },
+      "user.skills": {
+        "type": "keyword[]"
+      },
+      "user.experience": {
+        "type": "number"
+      },
+      "request.city": {
+        "type": "keyword"
+      }
+    }
+  },
+  "schemas": {
+    "job": {
+      "version": 1,
+      "fields": {
+        "city": {
+          "type": "keyword",
+          "indexed": true
+        },
+        "skills": {
+          "type": "keyword[]",
+          "indexed": true
+        },
+        "salary": {
+          "type": "number",
+          "indexed": true
+        }
+      }
+    }
+  },
+  "strategies": [
+    {
+      "id": "member-jobs",
+      "version": 1,
+      "enabled": true,
+      "scope": {
+        "scene": "job_search",
+        "candidate_type": "job"
+      },
+      "when": {
+        "field": "user.member",
+        "op": "eq",
+        "value": {
+          "literal": true
+        }
+      },
+      "query": {
+        "all": [
+          {
+            "field": "candidate.city",
+            "op": "eq",
+            "value": {
+              "ref": "request.city"
+            }
+          },
+          {
+            "field": "candidate.skills",
+            "op": "contains_any",
+            "value": {
+              "ref": "user.skills"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "java-jobs",
+      "version": 1,
+      "enabled": true,
+      "scope": {
+        "scene": "job_search",
+        "candidate_type": "job"
+      },
+      "when": {
+        "field": "user.member",
+        "op": "eq",
+        "value": {
+          "literal": true
+        }
+      },
+      "query": {
+        "all": [
+          {
+            "all": [
+              {
+                "field": "candidate.city",
+                "op": "eq",
+                "value": {
+                  "ref": "request.city"
+                }
+              },
+              {
+                "field": "candidate.skills",
+                "op": "contains_any",
+                "value": {
+                  "ref": "user.skills"
+                }
+              }
+            ]
+          },
+          {
+            "field": "candidate.skills",
+            "op": "contains_all",
+            "value": {
+              "literal": [
+                "java"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "id": "800000000001",
+      "type": "job",
+      "schema_version": 1,
+      "version": 1,
+      "status": "active",
+      "attributes": {
+        "city": "shanghai",
+        "skills": [
+          "java",
+          "mysql"
+        ],
+        "salary": 30000
+      }
+    },
+    {
+      "id": "800000000002",
+      "type": "job",
+      "schema_version": 1,
+      "version": 1,
+      "status": "active",
+      "attributes": {
+        "city": "shanghai",
+        "skills": [
+          "go"
+        ],
+        "salary": 30000
+      },
+      "eligibility": {
+        "field": "user.experience",
+        "op": "gte",
+        "value": {
+          "literal": 8
+        }
+      }
+    },
+    {
+      "id": "800000000003",
+      "type": "job",
+      "schema_version": 1,
+      "version": 1,
+      "status": "active",
+      "attributes": {
+        "city": "beijing",
+        "skills": [
+          "java"
+        ],
+        "salary": 30000
+      }
+    },
+    {
+      "id": "800000000004",
+      "type": "job",
+      "schema_version": 1,
+      "version": 1,
+      "status": "inactive",
+      "attributes": {
+        "city": "shanghai",
+        "skills": [
+          "java"
+        ],
+        "salary": 30000
+      }
+    }
+  ]
+}

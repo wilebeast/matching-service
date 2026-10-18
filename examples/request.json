@@ -1,0 +1,18 @@
+{
+  "scene": "job_search",
+  "candidate_type": "job",
+  "context": {
+    "user": {
+      "member": true,
+      "skills": [
+        "java",
+        "go"
+      ],
+      "experience": 5
+    },
+    "request": {
+      "city": "shanghai"
+    }
+  },
+  "limit": 20
+}
